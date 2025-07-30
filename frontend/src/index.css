@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "daisyui/themes";
+@plugin "daisyui" {
+  themes: ["light", "dark", "forest", "coffee", "garden"];
+}

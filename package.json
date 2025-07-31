@@ -1,0 +1,23 @@
+{
+  "name": "notetakingapp_mern1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "start":"npm run start --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joshuaosunlakin3433/MY-THINKBOARD-APP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Joshuaosunlakin3433/MY-THINKBOARD-APP/issues"
+  },
+  "homepage": "https://github.com/Joshuaosunlakin3433/MY-THINKBOARD-APP#readme"
+}

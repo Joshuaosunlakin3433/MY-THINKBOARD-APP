@@ -7,9 +7,9 @@ const firebaseConfig = {
   projectId: "thinkboard-auth",
   storageBucket: "thinkboard-auth.firebasestorage.app",
   messagingSenderId: "786235743780",
-  appId: "1:786235743780:web:61b01fb9d94bdf2225c2b1"
+  appId: "1:786235743780:web:61b01fb9d94bdf2225c2b1",
 };
 
-const app = initializeApp(firebaseConfig) //Firebase initialization
+const app = initializeApp(firebaseConfig); //Firebase initialization
 
-export const auth = getAuth(app) //Authentication-specific function
+export const auth = getAuth(app); //Authentication-specific function

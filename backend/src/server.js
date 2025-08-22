@@ -1,18 +1,28 @@
-// const express = require('express')
+// Load env variables FIRST using require (runs immediately)
+import { config } from 'dotenv';
+config();
+
+// Now import everything else
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import path from "path";
 
 import notesRoutes from "./routes/notesRoutes.js";
 import { connectDB } from "../config/db.js";
 import rateLimiter from "../middleware/rateLimiter.js";
 
-dotenv.config();
-console.log(process.env.MONGO_URI);
+// Test env loading
+console.log("Testing env vars:");
+console.log("MONGO_URI:", process.env.MONGO_URI ? "✅ Found" : "❌ Missing");
+console.log("FIREBASE_PROJECT_ID:", process.env.FIREBASE_PROJECT_ID ? "✅ Found" : "❌ Missing");
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
+
+// ... rest of your code stays the same
+
+// ... rest of your code stays the same
 
 //middleware
 if (process.env.NODE_ENV !== "production") {

@@ -3,89 +3,125 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  //form states
+  // Form state - only email and password for login
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  //getting login function from AuthContext
+  // Get login function from AuthContext
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-    email.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
       setError("");
       setLoading(true);
+
       // Call the login function from AuthContext
       await login(email, password);
+
       // If successful, navigate to main app
       navigate("/");
     } catch (error) {
-      setError("Failed to log in: ", error.message);
+      // Firebase-specific error messages
+      let errorMessage = "Failed to sign in";
+
+      if (error.code === "auth/user-not-found") {
+        errorMessage = "No account found with this email";
+      } else if (error.code === "auth/wrong-password") {
+        errorMessage = "Incorrect password";
+      } else if (error.code === "auth/invalid-email") {
+        errorMessage = "Invalid email address";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMessage = "Too many failed attempts. Try again later.";
+      }
+
+      setError(errorMessage);
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-white mb-6 text-center">
-          Login to ThinkBoard
-        </h2>
+    <div className="relative min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="card bg-base-100 shadow-2xl border border-base-200 w-full max-w-md">
+            <div className="card-body p-8">
+              <h2 className="text-2xl font-bold text-base-content mb-6 text-center">
+                Sign In to ThinkBoard
+              </h2>
 
-        {/* Error message display */}
-        {error && (
-          <div className="bg-red-500 text-white p-3 rounded mb-4">{error}</div>
-        )}
+              {/* Error message display */}
+              {error && (
+                <div className="alert alert-error mb-4">
+                  <span>{error}</span>
+                </div>
+              )}
 
-        <form onSubmit={handleSubmit}>
-          {/* Email input */}
-          <div className="mb-4">
-            <label className="block text-gray-300 mb-2">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
-              required
-              disabled={loading}
-            />
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Email input */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text font-medium">Email</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="input input-bordered input-lg w-full focus:input-primary focus:outline-none transition-all duration-200"
+                    required
+                    disabled={loading}
+                    placeholder="Enter your email"
+                  />
+                </div>
+
+                {/* Password input */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text font-medium">Password</span>
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input input-bordered input-lg w-full focus:input-primary focus:outline-none transition-all duration-200"
+                    required
+                    disabled={loading}
+                    placeholder="Enter your password"
+                  />
+                </div>
+
+                {/* Submit button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn btn-primary btn-lg w-full mt-6"
+                >
+                  {loading ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      Signing In...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
+                </button>
+              </form>
+
+              {/* Link to signup */}
+              <p className="text-base-content/60 text-center mt-6">
+                Don't have an account?{" "}
+                <Link to="/signup" className="link link-primary font-medium">
+                  Sign up
+                </Link>
+              </p>
+            </div>
           </div>
-
-          {/* Password input */}
-          <div className="mb-6">
-            <label className="block text-gray-300 mb-2">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
-              required
-              disabled={loading}
-            />
-          </div>
-
-          {/* Submit button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Signing In..." : "Sign In"}
-          </button>
-        </form>
-
-        {/* Link to signup */}
-        <p className="text-gray-400 text-center mt-4">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-400 hover:underline">
-            Sign up
-          </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

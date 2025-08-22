@@ -1,13 +1,17 @@
 import { Routes, Route } from "react-router";
+import { AuthProvider } from "./contexts/AuthContext";
 import HomePage from "./pages/HomePage";
 import CreatePage from "./pages/CreatePage";
 import NoteDetailPage from "./pages/NoteDetailPage";
 import Footer from "./components/Footer";
+import Signup from "./components/Signup";
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+// Removed: import Navbar from "./components/NavBar"; (not needed here anymore)
 
 const App = () => {
   return (
-    
-       <div className="min-h-screen flex flex-col bg-black">
+    <div className="min-h-screen flex flex-col bg-black">
       {/* Background container - stays behind everything */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
@@ -16,11 +20,39 @@ const App = () => {
 
       {/* Main content area with proper z-index */}
       <div className="flex-1 relative z-10 px-5 sm:px-10">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/create" element={<CreatePage />} />
-          <Route path="/note/:id" element={<NoteDetailPage />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Public routes - no authentication required */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+
+            {/* Protected routes - authentication required */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/create"
+              element={
+                <ProtectedRoute>
+                  <CreatePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/note/:id"
+              element={
+                <ProtectedRoute>
+                  <NoteDetailPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </AuthProvider>
       </div>
 
       {/* Footer - will stick to bottom naturally */}

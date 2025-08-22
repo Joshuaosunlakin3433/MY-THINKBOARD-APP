@@ -1,5 +1,4 @@
 import {
-  Children,
   createContext,
   useContext,
   useEffect,
@@ -22,7 +21,7 @@ const AuthContext = createContext();
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within ");
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
@@ -31,8 +30,9 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false); // 🆕 New: Track if auth is ready
 
-  //Signup function
+  // Signup function
   const signup = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
@@ -42,29 +42,49 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  //Logout function
+  // Logout function
   const logout = () => {
     return signOut(auth);
   };
 
-  //Listen for authentication state management
+  // Listen for authentication state management
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
+      setAuthReady(true); // 🆕 Auth system is now ready
+      
+      if (user) {
+        console.log("🎉 User logged in:", user.email);
+      } else {
+        console.log("👤 No user logged in");
+      }
     });
 
-    //cleanup subscription on unmount
+    // cleanup subscription on unmount
     return unsubscribe;
   }, []);
 
-  //value object that will be provided to components
+  // 🆕 Helper function to get current user's token
+  const getAuthToken = async () => {
+    if (!user) return null;
+    try {
+      return await user.getIdToken();
+    } catch (error) {
+      console.error("Error getting auth token:", error);
+      return null;
+    }
+  };
+
+  // value object that will be provided to components
   const value = {
     user,
     signup,
     login,
     logout,
     loading,
+    authReady, // 🆕 Let components know when auth is ready
+    getAuthToken, // 🆕 Helper function for getting tokens
   };
 
   return (

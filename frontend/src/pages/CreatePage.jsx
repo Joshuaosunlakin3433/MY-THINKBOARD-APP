@@ -42,7 +42,7 @@ const CreatePage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-base-200 to-base-300">
+    <div className="relative min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           {/* Back Button with enhanced styling */}

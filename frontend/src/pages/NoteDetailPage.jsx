@@ -96,7 +96,7 @@ const NoteDetailPage = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-base-200 to-base-300">
+    <div className="relative min-h-screen">
       <div className="container mx-auto px-4 py-6 md:py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header with action buttons */}
